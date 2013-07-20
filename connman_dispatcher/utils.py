@@ -6,7 +6,8 @@ logger = logbook.Logger('connman-dispatcher')
 
 def execute_scripts_in_dirs(paths, state):
     for path in paths:
-        execute_scripts_in_dir(path, state)
+        if os.path.exists(path) and os.path.isdir(path):
+            execute_scripts_in_dir(path, state)
 
 def execute_scripts_in_dir(path, state):
     for script in sorted(os.listdir(path)):

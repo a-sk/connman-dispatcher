@@ -5,7 +5,7 @@ from pyee import EventEmitter
 import logbook
 logger = logbook.Logger('connman-dispatcher')
 
-__all__ = 'detector'
+__all__ = ['detector']
 
 
 def property_changed(_, message):

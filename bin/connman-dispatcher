@@ -5,28 +5,19 @@ import argparse
 import logbook
 
 # local imports
-from connman_dbus import detector
-from utils import execute_scripts_in_dirs
+from connman_dispatcher import detector, execute_scripts_in_dirs
 
 logger = logbook.Logger('connman-dispatcher')
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('path', action='append')
+    parser.add_argument('-p', '--path', action='append', required=True)
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    if not os.path.exists(args.path):
-        print('Scirpt folder %s does not exists')
-        sys.exit(1)
-
-    if not os.path.isdir(args.path):
-        print('%s is not a direcotry')
-        sys.exit(2)
-
     detector.on('up', lambda: execute_scripts_in_dirs(args.path, 'up'))
     detector.on('down', lambda: execute_scripts_in_dirs(args.path, 'down'))
     if detector.is_online: execute_scripts_in_dirs(args.path, 'up')
