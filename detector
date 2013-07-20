@@ -8,6 +8,8 @@ import glib
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 from pyee import EventEmitter
+import logbook
+logger = logbook.Logger('network-detector')
 
 
 def expand(path):
@@ -28,8 +30,10 @@ def notifications(bus, message):
     if message.get_member() == "PropertyChanged":
         _, state =  message.get_args_list()
         if state == 'online':
+            logger.info('network state change: online' )
             detector.emit('up')
         elif state == 'idle':
+            logger.info('network state change: offline' )
             detector.emit('down')
 
 detector = EventEmitter()
@@ -57,6 +61,7 @@ def execute_scripts(path, state):
     for script in sorted(os.listdir(path)):
         full_scirpt_path = os.path.join(path, script)
         if os.path.exists(full_scirpt_path):
+            logger.info('executing: %s' % full_scirpt_path)
             subprocess.Popen([full_scirpt_path, state])
 
 def main():
@@ -75,4 +80,8 @@ def main():
     run()
 
 if __name__ == '__main__':
-    main()
+    syslog_handler = logbook.SyslogHandler()
+    with syslog_handler.applicationbound():
+        logger.info('network-detector started')
+        main()
+        logger.info('network-detector stopped')
