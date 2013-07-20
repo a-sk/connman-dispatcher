@@ -1,26 +1,8 @@
 Description
 ===========
-Another project generation tool based on templates.
+Run scripts on network state changes
 
 Install
 =======
-    pip install templet [--user]
+    pip install connman-dispatcher [--user]
 
-Config
-======
-
-Configuration file path:
-
-    ~/.config/templet/config.json
-
-Configuration example
-=====================
-
-.. code-block:: javascript
-
-    {
-    "templates": {
-        "$PATH": ["path/to/common/templates/folder"]
-        "test": "path/to/template/in/different/folder"
-        }
-    }
