@@ -1,0 +1,78 @@
+#!/usr/bin/env python2
+
+import os
+import sys
+import subprocess
+import argparse
+import glib
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+from pyee import EventEmitter
+
+
+def expand(path):
+    return os.path.expandvars(os.path.expanduser(path))
+
+def mkdirp(path):
+    path = expand(path)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Acp. Cli.')
+    parser.add_argument('-p', '--path', default=mkdirp('~/.config/detector/scripts/'))
+    return parser.parse_args()
+
+def notifications(bus, message):
+    if message.get_member() == "PropertyChanged":
+        _, state =  message.get_args_list()
+        if state == 'online':
+            detector.emit('up')
+        elif state == 'idle':
+            detector.emit('down')
+
+detector = EventEmitter()
+DBusGMainLoop(set_as_default=True)
+
+bus = dbus.SystemBus()
+bus.add_match_string_non_blocking("interface='net.connman.Manager'")
+bus.add_message_filter(notifications)
+manager = dbus.Interface(bus.get_object('net.connman', "/"), 'net.connman.Manager')
+
+def is_online():
+    properties = manager.GetProperties()
+    if properties['State'] == 'online':
+        return True
+    return False
+
+def run():
+    mainloop = glib.MainLoop()
+    mainloop.run()
+
+detector.run = run
+detector.is_online = is_online
+
+def execute_scripts(path, state):
+    for script in sorted(os.listdir(path)):
+        full_scirpt_path = os.path.join(path, script)
+        if os.path.exists(full_scirpt_path):
+            subprocess.Popen([full_scirpt_path, state])
+
+def main():
+    args = parse_args()
+    if not os.path.exists(args.path):
+        print('Scirpt folder %s does not exists')
+        sys.exit(1)
+
+    if not os.path.isdir(args.path):
+        print('%s is not a direcotry')
+        sys.exit(2)
+
+    detector.on('up', lambda: execute_scripts(args.path, 'up'))
+    detector.on('down', lambda: execute_scripts(args.path, 'down'))
+    if detector.is_online: execute_scripts(args.path, 'up')
+    run()
+
+if __name__ == '__main__':
+    main()
