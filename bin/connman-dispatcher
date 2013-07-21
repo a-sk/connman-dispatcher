@@ -20,7 +20,6 @@ def main():
     args = parse_args()
     detector.on('up', lambda: execute_scripts_in_dirs(args.path, 'up'))
     detector.on('down', lambda: execute_scripts_in_dirs(args.path, 'down'))
-    if detector.is_online: execute_scripts_in_dirs(args.path, 'up')
     detector.run()
 
 

@@ -18,7 +18,7 @@ def property_changed(_, message):
         elif state == 'idle':
             logger.info('network state change: offline' )
             detector.emit('down')
-            detector.state = 'online'
+            detector.state = 'offline'
 
 
 detector = EventEmitter()
@@ -38,10 +38,13 @@ def is_online():
 
 
 def run():
+    detector.state = 'offline'
+    if is_online:
+        detector.emit('up')
+        detector.state = 'online'
+
     mainloop = glib.MainLoop()
     mainloop.run()
 
 
 detector.run = run
-detector.is_online = is_online
-detector.state = 'online' if is_online() else 'offline'
