@@ -11,18 +11,17 @@ __all__ = ['detector']
 def property_changed(_, message):
     if message.get_member() == "PropertyChanged":
         _, state =  message.get_args_list()
-        if state == 'online' and not detector.is_online:
+        if state == 'online' and detector.state == 'offline':
             logger.info('network state change: online' )
             detector.emit('up')
-            detector.is_online = True
+            detector.state = 'online'
         elif state == 'idle':
             logger.info('network state change: offline' )
             detector.emit('down')
-            detector.is_online = False
+            detector.state = 'online'
 
 
 detector = EventEmitter()
-detector.is_online = is_online()
 DBusGMainLoop(set_as_default=True)
 
 bus = dbus.SystemBus()
@@ -45,3 +44,4 @@ def run():
 
 detector.run = run
 detector.is_online = is_online
+detector.state = 'online' if is_online() else 'offline'
