@@ -27,7 +27,7 @@ setup(
     name='connman-dispatcher',
     version='0.0.5',
     description='Call scripts on network changes',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     author='Alexandr Skurikhin',
     author_email='a.skurikhin@gmail.com',
     url='http://github.com/a-sk/connman-dispatcher',
