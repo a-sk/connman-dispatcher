@@ -20,7 +20,8 @@ packages = [
 
 
 requires = [
-    'pyee >= 0.0.9'
+    'pyee >= 0.0.9',
+    'Logbook == 0.6.0'
 ]
 
 setup(
