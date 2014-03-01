@@ -24,8 +24,8 @@ def main():
 
 
 if __name__ == '__main__':
-    syslog_handler = logbook.SyslogHandler()
-    with syslog_handler.applicationbound():
+    log_handler = logbook.StderrHandler()
+    with log_handler.applicationbound():
         logger.info('started')
         main()
         logger.info('stopped')
