@@ -26,7 +26,7 @@ requires = [
 
 setup(
     name='connman-dispatcher',
-    version='0.0.6',
+    version='0.0.7',
     description='Call scripts on network changes',
     long_description=open('README.md').read(),
     author='Alexandr Skurikhin',
