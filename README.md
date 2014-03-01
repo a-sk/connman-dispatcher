@@ -12,10 +12,11 @@ Run scripts on network state changes
     $ connman-dispatcher -h
     usage: connman-dispatcher [-h] -p PATH
 
-Scripts are run from folders setted in -p argument
+Scripts are run from folders setted in -p argument.
+
 One can set more than one folder.
 
-When network state changes, each script is executed with either 'up' or 'down'
+When network state changes, each script is executed with either `up` or `down`
 argument, depening on the current network state.
 
 For example, if connman-dispatcher was run like this:
@@ -45,8 +46,8 @@ case $state in
 esac
 ```
 
-When network state changes from 'down' to 'up', each script in '/etc/connman-dispatcher'
-will be executed with 'up' argument, like this:
+When network state changes from `down` to `up`, each script in `/etc/connman-dispatcher`
+will be executed with `up` argument, like this:
 
     /etc/connman-dispatcher/10_handle_network_state_change.sh up
     /etc/connman-dispatcher/some_other_executable up
